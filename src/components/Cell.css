@@ -8,4 +8,6 @@
 	font-size: 30px;
 	user-select: none;
 	transition: all 0.3s ease;
+	will-change: transform;
+	transform: translateZ(0);
 }
