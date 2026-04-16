@@ -102,7 +102,8 @@ export function Board({ size, image }: { size: number; image: File | null }) {
 						cellSize={300 / size}
 						imgData={{
 							size: 300,
-							src: image ? URL.createObjectURL(image) : '/old-map.jpg',
+							// src: image ? URL.createObjectURL(image) : '/old-map.jpg',
+							src: image || '/old-map.jpg',
 							pos: {
 								x: -(cell.id % size) * (300 / size),
 								y: -Math.floor(cell.id / size) * (300 / size)

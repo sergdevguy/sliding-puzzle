@@ -97,7 +97,7 @@ export async function processImage(file: File): Promise<File> {
 			cropCtx?.drawImage(img, offsetX, offsetY, size, size, 0, 0, size, size)
 
 			// 3. Уменьшаем если нужно (например до 300x300)
-			const targetSize = 300
+			const targetSize = 1200
 			if (size > targetSize) {
 				const resizeCanvas = document.createElement('canvas')
 				resizeCanvas.width = targetSize

@@ -12,7 +12,7 @@ export function Cell({
 	cellSize: number
 	imgData: {
 		size: number
-		src: string
+		src: File | string
 		pos: { x: number; y: number }
 	}
 	isEmpty: boolean

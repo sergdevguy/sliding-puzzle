@@ -8,12 +8,19 @@ function App() {
 		'initial'
 	)
 	const [selectedImage, setSelectedImage] = useState<File | null>(null)
+	const [imageUrl, setImageUrl] = useState<string | null>(null)
 
 	useEffect(() => {
+		if (!selectedImage) {
+			setImageUrl(null)
+			return
+		}
+
+		const url = URL.createObjectURL(selectedImage)
+		setImageUrl(url)
+
 		return () => {
-			if (selectedImage) {
-				URL.revokeObjectURL(URL.createObjectURL(selectedImage))
-			}
+			URL.revokeObjectURL(url)
 		}
 	}, [selectedImage])
 
@@ -41,7 +48,7 @@ function App() {
 					</div>
 					<Board
 						size={3}
-						image={selectedImage}
+						image={imageUrl}
 					/>
 				</>
 			)}
