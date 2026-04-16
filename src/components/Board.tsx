@@ -11,7 +11,7 @@ export type CellType = {
 	fill: boolean
 }
 
-export function Board({ size, image }: { size: number; image: File | null }) {
+export function Board({ size, image }: { size: number; image: string | null }) {
 	const [cells, setCells] = useState<CellType[]>(() => {
 		const initialCells = Array(size * size)
 			.fill(null)
