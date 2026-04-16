@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { cropToSquare } from '../utils'
+import { processImage } from '../utils'
 import './ImageUpload.css'
 
 export function ImageUpload({
@@ -12,7 +12,7 @@ export function ImageUpload({
 	const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
 		const file = e.target.files?.[0]
 		if (file) {
-			const croppedFile = await cropToSquare(file)
+			const croppedFile = await processImage(file)
 			onImageSelect(croppedFile)
 			setPreview(URL.createObjectURL(croppedFile))
 		}

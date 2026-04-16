@@ -76,3 +76,60 @@ export function cropToSquare(file: File): Promise<File> {
 		}
 	})
 }
+
+export async function processImage(file: File): Promise<File> {
+	return new Promise(resolve => {
+		const img = new Image()
+		img.src = URL.createObjectURL(file)
+
+		img.onload = () => {
+			// 1. Сначала обрезаем до квадрата
+			const size = Math.min(img.width, img.height)
+			const offsetX = (img.width - size) / 2
+			const offsetY = (img.height - size) / 2
+
+			// 2. Создаем canvas для обрезки
+			const cropCanvas = document.createElement('canvas')
+			cropCanvas.width = size
+			cropCanvas.height = size
+
+			const cropCtx = cropCanvas.getContext('2d')
+			cropCtx?.drawImage(img, offsetX, offsetY, size, size, 0, 0, size, size)
+
+			// 3. Уменьшаем если нужно (например до 300x300)
+			const targetSize = 300
+			if (size > targetSize) {
+				const resizeCanvas = document.createElement('canvas')
+				resizeCanvas.width = targetSize
+				resizeCanvas.height = targetSize
+
+				const resizeCtx = resizeCanvas.getContext('2d')
+				resizeCtx?.drawImage(cropCanvas, 0, 0, targetSize, targetSize)
+
+				resizeCanvas.toBlob(
+					blob => {
+						const processedFile = new File([blob!], file.name, {
+							type: file.type
+						})
+						resolve(processedFile)
+						URL.revokeObjectURL(img.src)
+					},
+					file.type,
+					0.9
+				)
+			} else {
+				cropCanvas.toBlob(
+					blob => {
+						const processedFile = new File([blob!], file.name, {
+							type: file.type
+						})
+						resolve(processedFile)
+						URL.revokeObjectURL(img.src)
+					},
+					file.type,
+					0.9
+				)
+			}
+		}
+	})
+}
