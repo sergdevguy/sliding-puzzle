@@ -1,6 +1,9 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState, type RefObject } from 'react'
+import { shuffleArray } from '../utils'
 import './Board.css'
 import { Cell } from './Cell'
+import moveSoundWav from '/sounds/move.wav'
+import pairSoundWav from '/sounds/win.wav'
 
 type CellType = {
 	id: number
@@ -9,15 +12,26 @@ type CellType = {
 }
 
 export function Board({ size }: { size: number }) {
-	const [cells, setCells] = useState<CellType[]>(() =>
-		Array(size * size)
+	const [cells, setCells] = useState<CellType[]>(() => {
+		const initialCells = Array(size * size)
 			.fill(null)
 			.map((_, i) => ({
 				id: i,
 				pos: i,
-				fill: i === size * size - 1 ? false : true
+				fill: i !== size * size - 1
 			}))
-	)
+
+		return shuffleArray(initialCells, size)
+	})
+	const moveSoundRef = useRef<HTMLAudioElement | null>(null)
+	const pairSoundRef = useRef<HTMLAudioElement | null>(null)
+
+	function playSound(sound: RefObject<HTMLAudioElement | null>) {
+		if (sound.current) {
+			sound.current.currentTime = 0
+			sound.current.play()
+		}
+	}
 
 	function handleMoveCell(id: number) {
 		const emptyCell = cells.find(cell => !cell.fill)
@@ -44,8 +58,36 @@ export function Board({ size }: { size: number }) {
 					return cell
 				})
 			)
+			playSound(moveSoundRef)
 		}
 	}
+
+	function checkWin() {
+		const isWin = cells.every(cell => cell.id === cell.pos || !cell.fill)
+		if (isWin) {
+			playSound(pairSoundRef)
+			setTimeout(() => {
+				alert('Congratulations! You solved the puzzle!')
+			}, 300)
+		}
+	}
+
+	useEffect(() => {
+		checkWin()
+	}, [cells])
+
+	// init sounds
+	useEffect(() => {
+		const open = new Audio(moveSoundWav)
+		open.volume = 0.3
+		open.preload = 'auto'
+		moveSoundRef.current = open
+
+		const pair = new Audio(pairSoundWav)
+		pair.volume = 0.3
+		pair.preload = 'auto'
+		pairSoundRef.current = pair
+	}, [])
 
 	return (
 		<div
