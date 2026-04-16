@@ -11,7 +11,7 @@ export type CellType = {
 	fill: boolean
 }
 
-export function Board({ size }: { size: number }) {
+export function Board({ size, image }: { size: number; image: File | null }) {
 	const [cells, setCells] = useState<CellType[]>(() => {
 		const initialCells = Array(size * size)
 			.fill(null)
@@ -90,31 +90,33 @@ export function Board({ size }: { size: number }) {
 	}, [])
 
 	return (
-		<div
-			className="board"
-			style={{ gridTemplateColumns: `repeat(${size}, 1fr)` }}
-		>
-			{cells.map(cell => (
-				<Cell
-					key={cell.id}
-					id={cell.id}
-					cellSize={300 / size}
-					imgData={{
-						size: 300,
-						src: '/old-map.jpg',
-						pos: {
-							x: -(cell.id % size) * (300 / size),
-							y: -Math.floor(cell.id / size) * (300 / size)
-						}
-					}}
-					isEmpty={!cell.fill}
-					translate={{
-						x: (cell.pos % size) * (300 / size),
-						y: Math.floor(cell.pos / size) * (300 / size)
-					}}
-					onClick={handleMoveCell}
-				/>
-			))}
+		<div className="board__wrapper">
+			<div
+				className="board"
+				style={{ gridTemplateColumns: `repeat(${size}, 1fr)` }}
+			>
+				{cells.map(cell => (
+					<Cell
+						key={cell.id}
+						id={cell.id}
+						cellSize={300 / size}
+						imgData={{
+							size: 300,
+							src: image ? URL.createObjectURL(image) : '/old-map.jpg',
+							pos: {
+								x: -(cell.id % size) * (300 / size),
+								y: -Math.floor(cell.id / size) * (300 / size)
+							}
+						}}
+						isEmpty={!cell.fill}
+						translate={{
+							x: (cell.pos % size) * (300 / size),
+							y: Math.floor(cell.pos / size) * (300 / size)
+						}}
+						onClick={handleMoveCell}
+					/>
+				))}
+			</div>
 		</div>
 	)
 }

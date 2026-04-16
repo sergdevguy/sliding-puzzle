@@ -1,7 +1,10 @@
+.board__wrapper {
+	border: 1px solid gray;
+}
+
 .board {
 	position: relative;
 	display: grid;
 	width: 300px;
 	height: 300px;
-	border: 1px solid black;
 }

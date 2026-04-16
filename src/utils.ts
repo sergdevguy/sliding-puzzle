@@ -50,3 +50,29 @@ export function shuffleArray(cells: CellType[], size: number): CellType[] {
 
 	return shuffled
 }
+
+export function cropToSquare(file: File): Promise<File> {
+	return new Promise(resolve => {
+		const img = new Image()
+		img.src = URL.createObjectURL(file)
+
+		img.onload = () => {
+			const size = Math.min(img.width, img.height)
+			const canvas = document.createElement('canvas')
+			canvas.width = size
+			canvas.height = size
+
+			const ctx = canvas.getContext('2d')
+			const offsetX = (img.width - size) / 2
+			const offsetY = (img.height - size) / 2
+
+			ctx?.drawImage(img, offsetX, offsetY, size, size, 0, 0, size, size)
+
+			canvas.toBlob(blob => {
+				const croppedFile = new File([blob!], file.name, { type: file.type })
+				resolve(croppedFile)
+				URL.revokeObjectURL(img.src)
+			}, file.type)
+		}
+	})
+}
