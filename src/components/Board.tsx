@@ -5,7 +5,7 @@ import { Cell } from './Cell'
 import moveSoundWav from '/sounds/move.wav'
 import pairSoundWav from '/sounds/win.wav'
 
-type CellType = {
+export type CellType = {
 	id: number
 	pos: number
 	fill: boolean

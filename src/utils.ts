@@ -1,3 +1,5 @@
+import type { CellType } from './components/Board'
+
 export function shuffleArray(cells: CellType[], size: number): CellType[] {
 	// Создаем копию массива
 	const shuffled = [...cells]
