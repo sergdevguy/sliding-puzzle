@@ -11,17 +11,27 @@ export type CellType = {
 	fill: boolean
 }
 
-export function Board({ size, image }: { size: number; image: string | null }) {
+export function Board({
+	size,
+	image,
+	onMove,
+	onWin
+}: {
+	size: { cells: number; pixels: number }
+	image: string | null
+	onMove: () => void
+	onWin: () => void
+}) {
 	const [cells, setCells] = useState<CellType[]>(() => {
-		const initialCells = Array(size * size)
+		const initialCells = Array(size.cells * size.cells)
 			.fill(null)
 			.map((_, i) => ({
 				id: i,
 				pos: i,
-				fill: i !== size * size - 1
+				fill: i !== size.cells * size.cells - 1
 			}))
 
-		return shuffleArray(initialCells, size)
+		return shuffleArray(initialCells, size.cells)
 	})
 	const moveSoundRef = useRef<HTMLAudioElement | null>(null)
 	const pairSoundRef = useRef<HTMLAudioElement | null>(null)
@@ -41,10 +51,12 @@ export function Board({ size, image }: { size: number; image: string | null }) {
 		if (!cellToMove) return
 
 		const isAdjacent =
-			(cellToMove.pos === emptyCell.pos - 1 && emptyCell.pos % size !== 0) ||
-			(cellToMove.pos === emptyCell.pos + 1 && cellToMove.pos % size !== 0) ||
-			cellToMove.pos === emptyCell.pos - size ||
-			cellToMove.pos === emptyCell.pos + size
+			(cellToMove.pos === emptyCell.pos - 1 &&
+				emptyCell.pos % size.cells !== 0) ||
+			(cellToMove.pos === emptyCell.pos + 1 &&
+				cellToMove.pos % size.cells !== 0) ||
+			cellToMove.pos === emptyCell.pos - size.cells ||
+			cellToMove.pos === emptyCell.pos + size.cells
 
 		if (isAdjacent) {
 			setCells(prevCells =>
@@ -59,6 +71,7 @@ export function Board({ size, image }: { size: number; image: string | null }) {
 				})
 			)
 			playSound(moveSoundRef)
+			onMove()
 		}
 	}
 
@@ -67,7 +80,7 @@ export function Board({ size, image }: { size: number; image: string | null }) {
 		if (isWin) {
 			playSound(pairSoundRef)
 			setTimeout(() => {
-				alert('Congratulations! You solved the puzzle!')
+				onWin()
 			}, 300)
 		}
 	}
@@ -99,20 +112,20 @@ export function Board({ size, image }: { size: number; image: string | null }) {
 					<Cell
 						key={cell.id}
 						id={cell.id}
-						cellSize={300 / size}
+						cellSize={size.pixels / size.cells}
 						imgData={{
-							size: 300,
-							// src: image ? URL.createObjectURL(image) : '/old-map.jpg',
+							size: size.pixels,
 							src: image || '/old-map.jpg',
 							pos: {
-								x: -(cell.id % size) * (300 / size),
-								y: -Math.floor(cell.id / size) * (300 / size)
+								x: -(cell.id % size.cells) * (size.pixels / size.cells),
+								y:
+									-Math.floor(cell.id / size.cells) * (size.pixels / size.cells)
 							}
 						}}
 						isEmpty={!cell.fill}
 						translate={{
-							x: (cell.pos % size) * (300 / size),
-							y: Math.floor(cell.pos / size) * (300 / size)
+							x: (cell.pos % size.cells) * (size.pixels / size.cells),
+							y: Math.floor(cell.pos / size.cells) * (size.pixels / size.cells)
 						}}
 						onClick={handleMoveCell}
 					/>

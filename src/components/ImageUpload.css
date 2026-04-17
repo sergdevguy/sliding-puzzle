@@ -3,5 +3,31 @@
 	flex-direction: column;
 	align-items: center;
 	gap: 10px;
-	margin: 20px;
+
+	.image-upload__file {
+		opacity: 0;
+		visibility: hidden;
+		position: absolute;
+	}
+
+	.image-upload__file-button {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		background-color: #666666;
+		color: #fff;
+		padding: 10px 20px;
+		border-radius: 5px;
+		cursor: pointer;
+		transition: background-color 0.3s;
+	}
+
+	.image-upload__file-button:hover {
+		background-color: #000000;
+	}
+
+	.image-upload__error {
+		color: red;
+		font-size: 14px;
+	}
 }
