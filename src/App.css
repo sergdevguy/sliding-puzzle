@@ -68,15 +68,39 @@
 
 	.app__toolbar {
 		display: flex;
+		justify-content: space-between;
+		align-items: center;
 		gap: 20px;
+		width: 100%;
 		margin-bottom: 20px;
+
+		button {
+			padding: 4px 6px;
+			border-radius: 6px;
+			border: none;
+			background: #666666;
+			color: white;
+			transition: all 0.2s linear;
+
+			&:hover {
+				color: white;
+				background: black;
+			}
+		}
 	}
 
 	.app__game {
+		position: relative;
 		display: flex;
 		flex-direction: column;
 		justify-content: center;
 		align-items: center;
+
+		.app__preview {
+			position: absolute;
+			bottom: 0;
+			z-index: 1;
+		}
 	}
 
 	.app__finished {

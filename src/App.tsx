@@ -56,6 +56,7 @@ function App() {
 	const [imageUrl, setImageUrl] = useState<string | null>(null)
 	const [moves, setMoves] = useState(0)
 	const [size, setSize] = useState<SizeType | null>(null)
+	const [showImage, setShowImage] = useState(false)
 
 	function handleWin() {
 		setTimeout(() => {
@@ -154,7 +155,18 @@ function App() {
 				<div className="app__game">
 					<div className="app__toolbar">
 						<div>Moves: {moves}</div>
+						<button onClick={() => setShowImage(!showImage)}>
+							Watch image
+						</button>
 					</div>
+					{showImage && imageUrl && (
+						<img
+							width={300}
+							src={imageUrl}
+							alt="preview"
+							className="app__preview"
+						/>
+					)}
 					<Board
 						size={size!}
 						image={imageUrl}
